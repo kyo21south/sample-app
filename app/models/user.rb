@@ -84,6 +84,9 @@ class User < ApplicationRecord
     following.include?(other_user)
   end
 
+  # def search
+  #   @users = User.where(activated: true,"user_name = ?", user_name: name).paginate(page:params[:page])
+  # end
   private
 
     # メールアドレスをすべて小文字にする

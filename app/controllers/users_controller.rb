@@ -5,7 +5,18 @@ class UsersController < ApplicationController
   before_action :admin_user, only: :destroy
 
   def index
-    @users = User.where(activated: true).paginate(page:params[:page])
+    if params[:index] && (@str = params[:index][:query].to_s) && !@str.empty?
+      @users = User.where(activated: true, name: @str).paginate(page:params[:page])
+    else
+      @users = User.where(activated: true).paginate(page:params[:page])
+    end
+  end
+
+  def search
+    str = params[:search][:query]
+    @users = User.where("name = str").paginate(page:params[:page])
+    # @users = User.where(activated: true).paginate(page:params[:page])
+    render 'show_follow'
   end
 
   def show
@@ -62,11 +73,11 @@ class UsersController < ApplicationController
     @users = @user.followers.paginate(page: params[:page])
     render 'show_follow'
   end
-  
+
   private
 
     def user_params
-      params.require(:user).permit(:name, :email, :password, :password_confirmation)
+      params.require(:user).permit(:name, :email, :password, :password_confirmation, :query)
     end
 
     # def logged_in_user
