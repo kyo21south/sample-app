@@ -5,18 +5,36 @@ class UsersController < ApplicationController
   before_action :admin_user, only: :destroy
 
   def index
-    if params[:index] && (@str = params[:index][:query].to_s) && !@str.empty?
-      @users = User.where(activated: true, name: @str).paginate(page:params[:page])
+    if params[:search] && (@str = params[:search][:query].to_s) && !@str.blank?
+      # @users = User.where(activated: true, name: @str).paginate(page:params[:page])
+      @users = User.where('name LIKE(?) AND activated = ?', "%#{@str}%", true).paginate(page:params[:page])
     else
       @users = User.where(activated: true).paginate(page:params[:page])
     end
+
+    # respond_to do |format|
+    #   format.html { redirect_to @users }
+    #   format.js
+    # end
+    # @users ||= User.where(activated: true).paginate(page:params[:page])
+    # if params[:index] && (@str = params[:index][:query].to_s) && !@str.blank?
+    #   # @users = User.where(activated: true, name: @str).paginate(page:params[:page])
+    #   @users = User.where('name LIKE(?) AND activated = ?', "%#{@str}%", true).paginate(page:params[:page])
+    # else
+    #   @users = User.where(activated: true).paginate(page:params[:page])
+    # end
   end
 
   def search
-    str = params[:search][:query]
-    @users = User.where("name = str").paginate(page:params[:page])
-    # @users = User.where(activated: true).paginate(page:params[:page])
-    render 'show_follow'
+    if params[:search] && (@str = params[:search][:query].to_s) && !@str.blank?
+      @users = User.where('name LIKE(?) AND activated = ?', "%#{@str}%", true).paginate(page:params[:page])
+    else
+      @users = User.where(activated: true).paginate(page:params[:page])
+    end
+    respond_to do |format|
+      format.html { redirect_to users_path(@users) }
+      format.js
+    end
   end
 
   def show

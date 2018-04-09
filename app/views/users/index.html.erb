@@ -2,15 +2,27 @@
 
 <h1>All users</h1>
 
-<%= form_for(:index, url: users_path) do |f| %>
-  <%= f.text_field :query, class: 'form-control' %>
+<%= form_for(:search, url: users_path,remote: true) do |f| %>
+  <%= f.text_field :query, class: 'form-control', id: 'search-form' %>
   <%= f.submit "Search", class: "btn btn-primary" %>
+  <%#= f.submit "Display all results", class: "btn btn-primary", remote: false %>
 <% end %>
-
+<%# if @str.blank? %>
+<div id = "users_list">
 <%= will_paginate %>
-
+<%# end %>
 <ul class="users">
   <%= render @users %>
 </ul>
-
+<%# if @str.blank? %>
 <%= will_paginate %>
+</div>
+<%# end %>
+<!-- <ul class="users">
+  <% @users.each do |user| %>
+    <li>
+      <%= gravatar_for user, size: 50 %>
+      <%= link_to user.name, user %>
+    </li>
+  <% end %>
+</ul> -->
