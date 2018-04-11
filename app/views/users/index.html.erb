@@ -9,13 +9,13 @@
 <% end %>
 <%# if @str.blank? %>
 <div id = "users_list">
-<%= will_paginate %>
+<%= will_paginate(@users, params:{search:{query:@str}}) %>
 <%# end %>
 <ul class="users">
   <%= render @users %>
 </ul>
 <%# if @str.blank? %>
-<%= will_paginate %>
+<%= will_paginate(@users, params:{search:{query:@str}}) %>
 </div>
 <%# end %>
 <!-- <ul class="users">
@@ -26,3 +26,4 @@
     </li>
   <% end %>
 </ul> -->
+<!-- params:{name: "%#{@str}%"} -->

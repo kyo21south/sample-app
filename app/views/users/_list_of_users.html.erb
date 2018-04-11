@@ -1,4 +1,5 @@
-
+<%= will_paginate(@users, params:{search:{query:@str}}) %>
 <ul class="users">
   <%= render @users %>
 </ul>
+<%= will_paginate(@users, params:{search:{query:@str}}) %>
