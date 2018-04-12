@@ -17,11 +17,16 @@ Rails.application.routes.draw do
   post '/users', to: 'users#search'
   resources :users do
     member do
-      get :following, :followers
+      get :following, :followers, :favorites
     end
   end
   resources :account_activations, only:[:edit]
   resources :password_resets,     only: [:new, :create, :edit, :update]
-  resources :microposts, only:[:create, :destroy]
+  resources :microposts, only:[:create, :destroy] do
+    member do
+      get :favorer
+    end
+  end
   resources :relationships, only:[:create, :destroy]
+  resources :favorites, only:[:create, :destroy]
 end

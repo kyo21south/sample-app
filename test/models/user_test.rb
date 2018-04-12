@@ -113,4 +113,15 @@ class UserTest < ActiveSupport::TestCase
     end
   end
 
+  test "should fav and unfav a micropost" do
+    michael = users(:michael)
+    orange = microposts(:orange)
+    assert_not michael.favorites?(orange)
+    michael.fav(orange)
+    assert michael.favorites?(orange)
+    assert orange.favorer.include?(michael)
+    michael.unfav(orange)
+    assert_not michael.favorites?(orange)
+  end
+
 end

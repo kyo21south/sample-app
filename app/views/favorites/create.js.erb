@@ -1,0 +1,2 @@
+$("#favorite_button-<%= @micropost.id %>").html("<%= escape_javascript(render('microposts/favorite_button')) %>");
+$("#favorites-<%= @current_user.id %>").html('<%= @current_user.favorites.count %>');

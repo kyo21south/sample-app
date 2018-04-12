@@ -8,6 +8,8 @@ class User < ApplicationRecord
                                    dependent:   :destroy
   has_many :following, through: :active_relationships, source: :followed
   has_many :followers, through: :passive_relationships, source: :follower
+  has_many :favorite_relationships, class_name: "Favorite", foreign_key: "user_id", dependent: :destroy
+  has_many :favorites, through: :favorite_relationships, source: :micropost
 
   attr_accessor :remember_token, :activation_token, :reset_token
   before_save  :downcase_email
@@ -69,7 +71,9 @@ class User < ApplicationRecord
 
   def feed
     following_ids = "SELECT followed_id FROM relationships WHERE follower_id = :user_id"
-    Micropost.where("user_id IN (#{following_ids}) OR user_id = :user_id", user_id: id)
+    favorite_micropost_ids = "SELECT micropost_id FROM favorites WHERE user_id = :user_id"
+    Micropost.where("user_id IN (#{following_ids}) OR user_id = :user_id OR
+                     id IN (#{favorite_micropost_ids})", user_id: id)
   end
 
   def follow(other_user)
@@ -84,9 +88,18 @@ class User < ApplicationRecord
     following.include?(other_user)
   end
 
-  # def search
-  #   @users = User.where(activated: true,"user_name = ?", user_name: name).paginate(page:params[:page])
-  # end
+  def fav(micropost)
+    favorite_relationships.create(micropost_id: micropost.id)
+  end
+
+  def unfav(micropost)
+    favorite_relationships.find_by(micropost_id: micropost.id).destroy
+  end
+
+  def favorites?(micropost)
+    favorites.include?(micropost)
+  end
+
   private
 
     # メールアドレスをすべて小文字にする
