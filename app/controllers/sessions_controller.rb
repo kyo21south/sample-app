@@ -1,5 +1,10 @@
 class SessionsController < ApplicationController
+  attr_accessor :inputEmail
+  attr_accessor :inputPassword
+  
   def new
+    @inputEmail ||= ""
+    @inputPassword ||= ""
   end
 
   def create
@@ -17,6 +22,8 @@ class SessionsController < ApplicationController
       end
     else
       flash.now[:danger] = 'Invalid email/password combination'
+      @inputEmail = params[:session][:email]
+      @inputPassword = params[:session][:password]
       render 'new'
     end
   end
